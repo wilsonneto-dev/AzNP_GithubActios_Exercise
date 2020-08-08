@@ -1,0 +1,49 @@
+name: Publishing ACR
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+    name: Building the bin code
+    runs-on: ubuntu-latest
+    
+    env:
+      DIRETORIO_WEBAPP: "./SiteContagem"
+  
+    steps:
+    - name: getting the code
+      uses: actions/checkout@v2
+
+    - name: Just a log
+      run: echo Let's go!
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+
+    - name: Build com o utilitario dotnet
+      run: dotnet build ${{ env.DIRETORIO_WEBAPP }} --configuration Release
+
+    - name: Publish com o utilitario dotnet
+      run: dotnet publish ${{ env.DIRETORIO_WEBAPP }} -c Release -o app
+
+    - name: Azure Login - Conectando com Credenciais no Azure
+      uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Docker Login - Azure Container Registry
+      uses: Azure/docker-login@v1
+      with:
+        login-server: ${{ secrets.DOCKER_REGISTRY }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build e Push no Azure ACR
+      run: |
+        cd ${{ env.DIRETORIO_WEBAPP }}
+        docker build . --file DockerfileProd --tag ${{ DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}:$GITHUB_RUN_NUMBER
+        docker tag ${{ DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}:$GITHUB_RUN_NUMBER ${{ DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}:latest
+        docker push ${{ DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}
