@@ -1,0 +1,39 @@
+name: Atividade Prática - Azure na Prática
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Building the App
+    env:
+      IDENTIFICACAO_ALUNO: 10
+      DIRETORIO_WEBAPP: "./SiteContagem"
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Getting the Code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+
+    - name: Build com o utilitario dotnet
+      run: dotnet build ${{ env.DIRETORIO_WEBAPP }} --configuration Release
+
+    - name: Publish com o utilitario dotnet
+      run: dotnet publish ${{ env.DIRETORIO_WEBAPP }} -c Release -o app
+
+    - name: Azure Login - Conectando com Credenciais no Azure
+      #anotation here
+      uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+  
+    - name: Azure WebApp - Publicação na nuvem
+      uses: Azure/webapps-deploy@v2
+      with:
+        app-name: AppAzNp01
+        package: './app'
