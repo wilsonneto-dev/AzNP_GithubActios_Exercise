@@ -51,7 +51,7 @@ jobs:
       env:
         WEB_APP: ${{ secrets.WEB_APP }} 
         IMAGEM_DEPLOYMENT: ${{ secrets.NOME_IMAGEM }}:latest
-      uses: Azure/webapps-container-deploy@v1
+      uses: Azure/webapps-container-deploy@v2
       with:
-        app-name: ${{ env.WEB_APP }}
+        name: ${{ env.WEB_APP }}
         images: ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}
