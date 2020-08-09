@@ -46,3 +46,12 @@ jobs:
         docker build . --file ${{ env.DIRETORIO_WEBAPP }}/DockerfileProd --tag ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}:$GITHUB_RUN_NUMBER
         docker tag ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}:$GITHUB_RUN_NUMBER ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}:latest
         docker push ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}
+
+    - name: Deployment - Azure WebApp Container
+      env:
+        WEB_APP: ${{ secrets.WEB_APP }} 
+        IMAGEM_DEPLOYMENT: ${{ secrets.NOME_IMAGEM }}:latest
+      uses: Azure/webapps-container-deploy@v1
+      with:
+        app-name: ${{ env.WEB_APP }}
+        images: ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}
