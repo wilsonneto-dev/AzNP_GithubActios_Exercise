@@ -45,5 +45,5 @@ jobs:
       run: |
         cd ${{ env.DIRETORIO_WEBAPP }}
         docker build . --file DockerfileProd --tag ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}:$GITHUB_RUN_NUMBER
-        docker tag ${{ DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}:$GITHUB_RUN_NUMBER ${{ DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}:latest
-        docker push ${{ DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}
+        docker tag ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}:$GITHUB_RUN_NUMBER ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}:latest
+        docker push ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NOME_IMAGEM }}
