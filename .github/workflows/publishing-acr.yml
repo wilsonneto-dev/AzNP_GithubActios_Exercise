@@ -1,4 +1,4 @@
-name: Publishing ACR
+name: Publishing ACR.
 
 on:
   workflow_dispatch:
