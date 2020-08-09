@@ -16,7 +16,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Just a log
-      run: echo Let's go!
+      run: echo Lets go!
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
